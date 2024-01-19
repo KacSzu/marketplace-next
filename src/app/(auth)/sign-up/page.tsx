@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import {
-  AuthCredentailsValidator,
-  TAuthCredentialsValidor,
+  TAuthCredentialsValidator,
+  AuthCredentaialsValidator,
 } from "@/lib/validators/account-credentials-validator";
 import { trpc } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,12 +18,15 @@ function SignupPage() {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<TAuthCredentialsValidor>({
-    resolver: zodResolver(AuthCredentailsValidator),
+  } = useForm<TAuthCredentialsValidator>({
+    resolver: zodResolver(AuthCredentaialsValidator),
   });
 
-  function onSubmit({ email, password }: TAuthCredentialsValidor) {
-    // send data to server
+  const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({});
+
+  function onSubmit({ email, password }: TAuthCredentialsValidator) {
+    console.log(email, password);
+    mutate({ email, password });
   }
   return (
     <>
@@ -50,6 +53,7 @@ function SignupPage() {
                 <div className="grid gap-1 py-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
+                    type="email"
                     {...register("email")}
                     className={cn({
                       "focus-visible:ring-red-500": errors.email,
@@ -60,6 +64,7 @@ function SignupPage() {
                 <div className="grid gap-1 py-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
+                    type="password"
                     {...register("password")}
                     className={cn({
                       "focus-visible:ring-red-500": errors.password,
