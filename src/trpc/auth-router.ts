@@ -47,4 +47,22 @@ export const authRouter = router({
 
       return { success: true };
     }),
+  signIn: publicProcedure
+    .input(AuthCredentaialsValidator)
+    .mutation(async ({ input, ctx }) => {
+      const { email, password } = input;
+      const payload = await getPayloadClient();
+      const { res } = ctx;
+      try {
+        await payload.login({
+          collection: "users",
+          data: { email, password },
+          res,
+        });
+        return { success: true };
+      } catch (err) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      // check if user alredy exists
+    }),
 });
