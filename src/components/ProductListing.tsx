@@ -20,7 +20,7 @@ function ProductListing({ product, index }: ProductListingProps) {
 
   const validUrls = product?.images
     .map(({ image }) => (typeof image === "string" ? image : image.url))
-    .filter(Boolean);
+    .filter(Boolean) as string[];
 
   useEffect(() => {
     const timer = setTimeout(() => {
